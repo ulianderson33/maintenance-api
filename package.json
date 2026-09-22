@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "REST API для учёта заявок на обслуживание оборудования",
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
