@@ -1,0 +1,34 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: maintenance-api:latest
+    container_name: maintenance-api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATA_DIR: /app/data
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:5173}
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-60000}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-100}
+      WEATHER_API_URL: ${WEATHER_API_URL:-https://api.open-meteo.com/v1/forecast}
+      GEOCODING_API_URL: ${GEOCODING_API_URL:-https://geocoding-api.open-meteo.com/v1/search}
+      REQUEST_TIMEOUT_MS: ${REQUEST_TIMEOUT_MS:-5000}
+      WEATHER_MAX_WIND_MS: ${WEATHER_MAX_WIND_MS:-10}
+      WEATHER_MAX_PRECIPITATION_MM: ${WEATHER_MAX_PRECIPITATION_MM:-0.5}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    volumes:
+      - api-data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  api-data:
