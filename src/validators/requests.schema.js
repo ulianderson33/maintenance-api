@@ -50,3 +50,26 @@ export const listRequestsQuerySchema = {
 export const idParamSchema = {
   params: Joi.object({ id: id.required() }),
 };
+
+export const assignTeamSchema = {
+  params: Joi.object({ id: id.required() }),
+  body: Joi.object({
+    assignees: Joi.array()
+      .items(
+        Joi.object({
+          technicianId: id.required(),
+          role: Joi.string().valid('lead', 'member').required(),
+          hours: Joi.number().positive().precision(2).required(),
+        }),
+      )
+      .min(1)
+      .required(),
+  }).unknown(false),
+};
+
+export const unassignParamSchema = {
+  params: Joi.object({
+    id: id.required(),
+    userId: id.required(),
+  }),
+};

@@ -6,6 +6,7 @@ import {
   updateRequestSchema,
   updateStatusSchema,
   listRequestsQuerySchema,
+  assignTeamSchema,
   idParamSchema,
 } from '../validators/requests.schema.js';
 
@@ -21,3 +22,16 @@ requestsRouter.patch(
   requestsController.updateStatus,
 );
 requestsRouter.delete('/:id', validate(idParamSchema), requestsController.remove);
+
+// Новые эндпоинты
+requestsRouter.post(
+  '/:id/assignees',
+  validate(assignTeamSchema),
+  requestsController.assignTeam,
+);
+requestsRouter.delete(
+  '/:id/assignees/:userId',
+  validate(idParamSchema),
+  requestsController.unassign,
+);
+requestsRouter.get('/:id/history', validate(idParamSchema), requestsController.history);
