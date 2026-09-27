@@ -1,13 +1,12 @@
-require('dotenv').config?.();  // если используешь dotenv
-// или вручную читаем .env
+'use strict';
+
 const fs = require('node:fs');
 const path = require('node:path');
 
-// простой .env парсер
 function loadEnv() {
-  const p = path.resolve(process.cwd(), '.env');
-  if (!fs.existsSync(p)) return;
-  for (const line of fs.readFileSync(p, 'utf8').split('\n')) {
+  const envPath = path.resolve(process.cwd(), '.env');
+  if (!fs.existsSync(envPath)) return;
+  for (const line of fs.readFileSync(envPath, 'utf8').split('\n')) {
     const t = line.trim();
     if (!t || t.startsWith('#')) continue;
     const i = t.indexOf('=');
