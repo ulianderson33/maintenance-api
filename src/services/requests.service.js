@@ -20,7 +20,7 @@ const ALLOWED_TRANSITIONS = {
   rejected: [],
 };
 
-// Маппинг camelCase → snake_case для ORDER BY (БД использует snake_case)
+// Маппинг camelCase → snake_case для ORDER BY
 const SORT_MAP = {
   createdAt: 'created_at',
   updatedAt: 'updated_at',
@@ -36,6 +36,26 @@ function resolveSort(sort, order) {
   const direction = String(order).toLowerCase() === 'asc' ? 'ASC' : 'DESC';
   return [column, direction];
 }
+
+// Переиспользуемые include'ы
+const ASSIGNMENTS_INCLUDE = {
+  model: RequestAssignee,
+  as: 'assignments',
+  attributes: ['requestId', 'technicianId', 'role', 'hours'],
+  include: [
+    {
+      model: Technician,
+      as: 'technician',
+      attributes: ['id', 'fullName', 'specialization', 'employeeNumber'],
+    },
+  ],
+};
+
+const EQUIPMENT_INCLUDE_SHORT = {
+  model: Equipment,
+  as: 'equipment',
+  attributes: ['id', 'name', 'serialNumber'],
+};
 
 export class RequestsService {
   async list(query) {
@@ -63,14 +83,7 @@ export class RequestsService {
           },
         }),
       },
-      include: [
-        { model: Equipment, as: 'equipment', attributes: ['id', 'name', 'serialNumber'] },
-        {
-          model: RequestAssignee,
-          as: 'assignments',
-          include: [{ model: Technician, as: 'technician' }],
-        },
-      ],
+      include: [EQUIPMENT_INCLUDE_SHORT, ASSIGNMENTS_INCLUDE],
       limit,
       offset: (page - 1) * limit,
       order: [resolveSort(sort, order)],
@@ -82,14 +95,7 @@ export class RequestsService {
 
   async getById(id) {
     const item = await MaintenanceRequest.findByPk(id, {
-      include: [
-        { model: Equipment, as: 'equipment' },
-        {
-          model: RequestAssignee,
-          as: 'assignments',
-          include: [{ model: Technician, as: 'technician' }],
-        },
-      ],
+      include: [EQUIPMENT_INCLUDE_SHORT, ASSIGNMENTS_INCLUDE],
     });
     if (!item) throw new NotFoundError('Заявка', id);
     return item;
@@ -249,13 +255,7 @@ export class RequestsService {
       );
 
       return MaintenanceRequest.findByPk(requestId, {
-        include: [
-          {
-            model: RequestAssignee,
-            as: 'assignments',
-            include: [{ model: Technician, as: 'technician' }],
-          },
-        ],
+        include: [ASSIGNMENTS_INCLUDE],
         transaction: t,
       });
     });
@@ -286,6 +286,7 @@ export class RequestsService {
 
     return RequestStatusHistory.findAll({
       where: { requestId },
+      attributes: ['id', 'fromStatus', 'toStatus', 'author', 'comment', 'created_at'],
       order: [['created_at', 'ASC']], // ← snake_case
     });
   }
