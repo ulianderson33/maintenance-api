@@ -1,8 +1,25 @@
+import { Equipment, Site, EquipmentPassport } from '../db/models/index.js';
 import { equipmentRepository } from '../repositories/equipment.repository.js';
 import { requestsRepository } from '../repositories/requests.repository.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 import { ConflictError } from '../errors/ConflictError.js';
-import { ValidationError } from '../errors/ValidationError.js';
+
+// Маппинг camelCase → snake_case для ORDER BY
+const SORT_MAP = {
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
+  name: 'name',
+  installedAt: 'installed_at',
+  serialNumber: 'serial_number',
+  status: 'status',
+  type: 'type',
+};
+
+function resolveSort(sort, order) {
+  const column = SORT_MAP[sort] ?? 'created_at';
+  const direction = String(order).toLowerCase() === 'asc' ? 'ASC' : 'DESC';
+  return [column, direction];
+}
 
 export class EquipmentService {
   async list(query) {
@@ -15,23 +32,22 @@ export class EquipmentService {
       order = 'desc',
     } = query;
 
-    let items = await equipmentRepository.findAll();
-    if (status) items = items.filter((e) => e.status === status);
-    if (type) items = items.filter((e) => e.type === type);
-
-    const total = items.length;
-    items.sort((a, b) => {
-      const av = a[sort];
-      const bv = b[sort];
-      if (av === bv) return 0;
-      const cmp = av > bv ? 1 : -1;
-      return order === 'asc' ? cmp : -cmp;
+    const { count, rows } = await Equipment.findAndCountAll({
+      where: {
+        ...(status && { status }),
+        ...(type && { type }),
+      },
+      include: [
+        { model: Site, as: 'site', attributes: ['id', 'name', 'code', 'region'] },
+        { model: EquipmentPassport, as: 'passport' },
+      ],
+      limit,
+      offset: (page - 1) * limit,
+      order: [resolveSort(sort, order)],
+      distinct: true,
     });
 
-    const start = (page - 1) * limit;
-    const paged = items.slice(start, start + limit);
-
-    return { items: paged, total, page, limit };
+    return { items: rows, total: count, page, limit };
   }
 
   async getById(id) {
@@ -52,7 +68,7 @@ export class EquipmentService {
   }
 
   async update(id, patch) {
-    await this.getById(id); // бросит 404, если нет
+    await this.getById(id);
     return equipmentRepository.update(id, patch);
   }
 
