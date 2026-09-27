@@ -26,12 +26,34 @@ export const requestsController = {
   }),
 
   updateStatus: asyncHandler(async (req, res) => {
-    const item = await requestsService.updateStatus(req.params.id, req.body.status);
+    const item = await requestsService.updateStatus(req.params.id, req.body.status, {
+      author: req.body.author ?? 'system',
+      comment: req.body.comment,
+    });
     res.json({ data: item });
   }),
 
   remove: asyncHandler(async (req, res) => {
     await requestsService.remove(req.params.id);
     res.status(204).send();
+  }),
+
+  // ---------- Новые эндпоинты Кейса 3 ----------
+
+  assignTeam: asyncHandler(async (req, res) => {
+    const item = await requestsService.assignTeam(req.params.id, req.body.assignees, {
+      author: req.body.author ?? 'system',
+    });
+    res.json({ data: item });
+  }),
+
+  unassign: asyncHandler(async (req, res) => {
+    await requestsService.unassign(req.params.id, req.params.userId);
+    res.status(204).send();
+  }),
+
+  history: asyncHandler(async (req, res) => {
+    const items = await requestsService.getHistory(req.params.id);
+    res.json({ data: items });
   }),
 };
