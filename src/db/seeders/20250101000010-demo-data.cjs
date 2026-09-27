@@ -20,15 +20,14 @@ module.exports = {
       updated_at: now,
     })));
 
-    // ---------- Оборудование ----------
-    const equipment = [
-  { site_id: sites[0].id, name: 'Turbine A1',    type: 'turbine',    serial_number: 'SN-N-001', status: 'operational',  installed_at: '2020-05-15' },
-  { site_id: sites[0].id, name: 'Turbine A2',    type: 'turbine',    serial_number: 'SN-N-002', status: 'maintenance',  installed_at: '2020-05-20' },
-  { site_id: sites[0].id, name: 'Inverter I1',   type: 'inverter',   serial_number: 'SN-N-003', status: 'operational',  installed_at: '2021-03-10' },
-  { site_id: sites[1].id, name: 'Turbine B1',    type: 'turbine',    serial_number: 'SN-S-001', status: 'fault',        installed_at: '2019-08-01' },
-  { site_id: sites[1].id, name: 'Turbine B2',    type: 'turbine',    serial_number: 'SN-S-002', status: 'operational',  installed_at: '2019-08-05' },
-  { site_id: sites[2].id, name: 'Sensor S1',     type: 'sensor',     serial_number: 'SN-C-001', status: 'operational',  installed_at: '2022-01-20' },
-  { site_id: sites[2].id, name: 'Substation C1', type: 'substation', serial_number: 'SN-C-002', status: 'operational',  installed_at: '2022-02-01' },
+  const equipment = [
+  { site_id: sites[0].id, name: 'Turbine A1', type: 'turbine', serial_number: 'SN-N-001', status: 'operational', installed_at: '2020-05-15' },
+  { site_id: sites[0].id, name: 'Turbine A2', type: 'turbine', serial_number: 'SN-N-002', status: 'maintenance', installed_at: '2020-05-20' },
+  { site_id: sites[0].id, name: 'Inverter I1', type: 'inverter', serial_number: 'SN-N-003', status: 'operational', installed_at: '2021-03-10' },
+  { site_id: sites[1].id, name: 'Turbine B1', type: 'turbine', serial_number: 'SN-S-001', status: 'fault', installed_at: '2019-08-01' },
+  { site_id: sites[1].id, name: 'Turbine B2', type: 'turbine', serial_number: 'SN-S-002', status: 'operational', installed_at: '2019-08-05' },
+  { site_id: sites[2].id, name: 'Sensor S1', type: 'sensor', serial_number: 'SN-C-001', status: 'operational', installed_at: '2022-01-20' },
+  { site_id: sites[2].id, name: 'Substation C1', type: 'substation', serial_number: 'SN-C-002', status: 'operational', installed_at: '2022-02-01' },
 ].map((e) => ({
   id: randomUUID(),
   ...e,
@@ -38,7 +37,6 @@ module.exports = {
 
     await queryInterface.bulkInsert('equipment', equipment);
 
-    // ---------- Паспорта ----------
     const passports = equipment.slice(0, 5).map((e) => ({
       id: randomUUID(),
       equipment_id: e.id,
