@@ -18,6 +18,22 @@ export const createEquipmentSchema = {
   }).unknown(false),
 };
 
+export const assignTeamSchema = {
+  params: Joi.object({ id: id.required() }),
+  body: Joi.object({
+    assignees: Joi.array()
+      .items(
+        Joi.object({
+          technicianId: id.required(),
+          role: Joi.string().valid('lead', 'member').required(),
+          hours: Joi.number().positive().precision(2).required(),
+        }),
+      )
+      .min(1)
+      .required(),
+  }).unknown(false),
+};
+
 export const updateEquipmentSchema = {
   params: Joi.object({ id: id.required() }),
   body: Joi.object({
