@@ -35,6 +35,20 @@ export const config = {
     max: Number(process.env.RATE_LIMIT_MAX ?? 100),
   },
 
+  db: {
+    host: process.env.DB_HOST ?? 'localhost',
+    port: Number(process.env.DB_PORT ?? 5432),
+    name: process.env.DB_NAME ?? 'maintenance',
+    user: process.env.DB_USER ?? 'maintenance',
+    password: process.env.DB_PASSWORD ?? 'maintenance_secret',
+    pool: {
+      max: Number(process.env.DB_POOL_MAX ?? 10),
+      min: Number(process.env.DB_POOL_MIN ?? 0),
+      acquire: Number(process.env.DB_POOL_ACQUIRE ?? 30000),
+      idle: Number(process.env.DB_POOL_IDLE ?? 10000),
+    },
+  },
+
   weather: {
     forecastUrl: process.env.WEATHER_API_URL ?? 'https://api.open-meteo.com/v1/forecast',
     geocodingUrl:

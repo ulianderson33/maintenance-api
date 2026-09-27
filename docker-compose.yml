@@ -1,4 +1,24 @@
 services:
+  db:
+    image: postgres:16-alpine
+    container_name: maintenance-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-maintenance}
+      POSTGRES_USER: ${DB_USER:-maintenance}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-maintenance_secret}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-maintenance} -d ${DB_NAME:-maintenance}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
   api:
     build:
       context: .
@@ -6,29 +26,43 @@ services:
     image: maintenance-api:latest
     container_name: maintenance-api
     restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "${PORT:-3000}:3000"
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATA_DIR: /app/data
+      # База данных
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-maintenance}
+      DB_USER: ${DB_USER:-maintenance}
+      DB_PASSWORD: ${DB_PASSWORD:-maintenance_secret}
+      DB_POOL_MAX: ${DB_POOL_MAX:-10}
+      DB_POOL_MIN: ${DB_POOL_MIN:-0}
+      DB_POOL_ACQUIRE: ${DB_POOL_ACQUIRE:-30000}
+      DB_POOL_IDLE: ${DB_POOL_IDLE:-10000}
+      # CORS
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:5173}
+      # Rate limiting
       RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-60000}
       RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-100}
+      # Внешние API
       WEATHER_API_URL: ${WEATHER_API_URL:-https://api.open-meteo.com/v1/forecast}
       GEOCODING_API_URL: ${GEOCODING_API_URL:-https://geocoding-api.open-meteo.com/v1/search}
       REQUEST_TIMEOUT_MS: ${REQUEST_TIMEOUT_MS:-5000}
       WEATHER_MAX_WIND_MS: ${WEATHER_MAX_WIND_MS:-10}
       WEATHER_MAX_PRECIPITATION_MM: ${WEATHER_MAX_PRECIPITATION_MM:-0.5}
+      # Логи
       LOG_LEVEL: ${LOG_LEVEL:-info}
-    volumes:
-      - api-data:/app/data
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
       interval: 30s
       timeout: 5s
       retries: 3
-      start_period: 5s
+      start_period: 10s
 
 volumes:
-  api-data:
+  postgres-data:
