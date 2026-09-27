@@ -699,6 +699,53 @@ npm run db:reset
 
 Скрипт `db:reset` последовательно выполняет: откат всех миграций → применение всех миграций → запуск сидов.
 
-## Лицензия
+## Аналитические отчёты
 
-MIT
+### Сводка по площадке — `GET /api/sites/:id/summary`
+
+Возвращает:
+- количество заявок в разрезе статусов;
+- количество заявок в разрезе приоритетов;
+- среднее время закрытия заявки в часах.
+
+Пример ответа:
+
+```json
+{
+  "data": {
+    "site": { "id": "...", "name": "Северный ветропарк", "code": "WP-NORTH", "region": "Мурманская обл." },
+    "byStatus": [
+      { "status": "new", "count": 5 },
+      { "status": "in_progress", "count": 3 },
+      { "status": "done", "count": 4 }
+    ],
+    "byPriority": [
+      { "priority": "high", "count": 6 },
+      { "priority": "critical", "count": 2 }
+    ],
+    "avgCloseHours": "18.50"
+  }
+}
+```
+
+### Отчёт по нагрузке на оборудование — `GET /api/reports/equipment-load`
+
+Параметры запроса:
+- `from` — начало периода (ISO-дата, опционально);
+- `to` — конец периода (ISO-дата, опционально);
+- `minRequests` — минимальное число заявок (фильтрация групп, `HAVING`, по умолчанию 1);
+- `page`, `limit` — пагинация.
+
+Для каждого оборудования возвращает:
+- `total_requests` — общее число заявок;
+- `closed_requests` — число закрытых (`closed_at IS NOT NULL`);
+- `total_hours` — суммарные плановые трудозатраты (сумма `request_assignees.hours`);
+- `last_service_at` — дата последнего закрытия заявки.
+
+Реализован **прямым SQL-запросом** с `LEFT JOIN`, `GROUP BY` и `HAVING`. Параметры передаются через `replacements` (bind), конкатенация пользовательского ввода запрещена.
+
+Пример:
+
+```bash
+curl "http://localhost:3000/api/reports/equipment-load?from=2026-01-01&minRequests=2"
+```
