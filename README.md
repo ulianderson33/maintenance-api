@@ -512,6 +512,193 @@ docker compose up --build
 
 ---
 
+## Схема базы данных
+
+### ER-диаграмма
+
+```
+┌──────────────────┐
+│      sites       │
+│  id (PK)         │
+│  name            │
+│  code (UNIQUE)   │
+│  region          │
+│  latitude        │
+│  longitude       │
+└────────┬─────────┘
+         │ 1
+         │
+         │ N
+┌────────▼─────────┐        ┌────────────────────────┐
+│    equipment     │ 1────1 │ equipment_passports    │
+│  id (PK)         │        │  equipment_id (U, FK)  │
+│  site_id (FK)    │        │  manufacturer          │
+│  name            │        │  model                 │
+│  type (ENUM)     │        │  rated_power_kw        │
+│  serial_number(U)│        │  last_inspection_at    │
+│  status (ENUM)   │        └────────────────────────┘
+│  installed_at    │
+└────────┬─────────┘
+         │ 1
+         │
+         │ N
+┌────────▼────────────────┐        ┌───────────────────────┐
+│  maintenance_requests   │ 1────N │ request_status_history│
+│  id (PK)                │        │  request_id (FK)      │
+│  equipment_id (FK)      │        │  from_status (ENUM)   │
+│  title                  │        │  to_status (ENUM)     │
+│  description            │        │  author, comment      │
+│  priority (ENUM)        │        │  created_at           │
+│  status (ENUM)          │        └───────────────────────┘
+│  planned_at             │
+│  author                 │
+│  closed_at              │
+└────────┬────────────────┘
+         │ N
+         │
+         │ N         ┌────────────────────────┐
+         └──────────▶│   request_assignees    │
+                     │  request_id (PK, FK)   │
+                     │  technician_id (PK, FK)│
+                     │  role (ENUM)           │
+                     │  hours (CHECK > 0)     │
+                     └───────────┬────────────┘
+                                 │ N
+                                 │
+                     ┌───────────▼────────────┐
+                     │      technicians       │
+                     │  id (PK)               │
+                     │  full_name             │
+                     │  specialization        │
+                     │  employee_number(U)    │
+                     └────────────────────────┘
+```
+
+### Описание таблиц
+
+| Таблица | Назначение | Ключевые ограничения |
+|---|---|---|
+| `sites` | Производственные площадки | `code` UNIQUE |
+| `equipment` | Оборудование на площадках | `serial_number` UNIQUE, `site_id` FK ON DELETE RESTRICT |
+| `equipment_passports` | Паспорта (1:1) | `equipment_id` UNIQUE, FK ON DELETE CASCADE |
+| `maintenance_requests` | Заявки на обслуживание | `equipment_id` FK ON DELETE RESTRICT |
+| `request_status_history` | Журнал смены статусов (append-only) | нет `updated_at`, записи не редактируются |
+| `technicians` | Специалисты | `employee_number` UNIQUE |
+| `request_assignees` | Назначения бригад (N:M) | составной PK `(request_id, technician_id)`, `hours > 0` |
+
+### Связи
+
+| Связь | Тип | Реализация |
+|---|---|---|
+| `sites` → `equipment` | 1:N | `equipment.site_id` — FK |
+| `equipment` → `equipment_passports` | 1:1 | `equipment_passports.equipment_id` — UNIQUE FK |
+| `equipment` → `maintenance_requests` | 1:N | `maintenance_requests.equipment_id` — FK |
+| `maintenance_requests` → `request_status_history` | 1:N | `request_status_history.request_id` — FK |
+| `maintenance_requests` ↔ `technicians` | N:M | через `request_assignees` с полями `role`, `hours` |
+
+### Обоснование третьей нормальной формы (3НФ)
+
+1. **1НФ** — все атрибуты атомарные, массивы и повторяющиеся группы отсутствуют.
+2. **2НФ** — все не-ключевые атрибуты зависят от полного первичного ключа. В `request_assignees` поля `role` и `hours` зависят от **составного ключа** `(request_id, technician_id)`, а не от его части.
+3. **3НФ** — транзитивных зависимостей нет:
+   - Название площадки хранится только в `sites` (не дублируется в `equipment`).
+   - Производитель оборудования хранится только в `equipment_passports`.
+   - Специализация специалиста — только в `technicians`.
+
+### Правила `ON DELETE`
+
+| Связь | Правило | Почему |
+|---|---|---|
+| `equipment.site_id` | `RESTRICT` | Нельзя удалить площадку с оборудованием |
+| `equipment_passports.equipment_id` | `CASCADE` | Паспорт не имеет смысла без оборудования |
+| `maintenance_requests.equipment_id` | `RESTRICT` | Нельзя удалить оборудование с заявками (дополнительно проверяется в сервисе для 409) |
+| `request_status_history.request_id` | `CASCADE` | История удаляется вместе с заявкой |
+| `request_assignees.request_id` | `CASCADE` | Назначения удаляются вместе с заявкой |
+| `request_assignees.technician_id` | `RESTRICT` | Нельзя удалить специалиста, назначенного на заявки |
+
+## Развёртывание с нуля
+
+### 1. Клонировать репозиторий
+
+```bash
+git clone https://github.com/ulianderson33/maintenance-api.git
+cd maintenance-api
+```
+
+### 2. Установить зависимости
+
+```bash
+npm install
+```
+
+### 3. Скопировать переменные окружения
+
+```bash
+cp .env.example .env
+```
+
+### 4. Запустить PostgreSQL
+
+```bash
+docker compose up -d db
+```
+
+Дождаться статуса `healthy`:
+
+```bash
+docker compose ps
+# maintenance-db   postgres:16-alpine   Up (healthy)   0.0.0.0:5432->5432/tcp
+```
+
+### 5. Применить миграции
+
+```bash
+npm run db:migrate
+```
+
+### 6. Наполнить базу демо-данными
+
+```bash
+npm run db:seed
+```
+
+Будут созданы: 3 площадки, 7 единиц оборудования, 5 специалистов, 22 заявки, история статусов и назначения.
+
+### 7. Запустить приложение
+
+```bash
+npm run dev
+```
+
+Сервер будет доступен на `http://localhost:3000`. Проверка:
+
+```bash
+curl http://localhost:3000/api/health
+# {"data":{"status":"ok"}}
+```
+
+## Откат миграций
+
+Полный откат схемы (удаляются все таблицы):
+
+```bash
+npm run db:migrate:undo:all
+```
+
+Откат последней миграции:
+
+```bash
+npm run db:migrate:undo
+```
+
+Полный сброс с пересозданием:
+
+```bash
+npm run db:reset
+```
+
+Скрипт `db:reset` последовательно выполняет: откат всех миграций → применение всех миграций → запуск сидов.
+
 ## Лицензия
 
 MIT
