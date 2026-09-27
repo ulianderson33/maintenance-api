@@ -453,6 +453,167 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Assign team to request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\r\npm.test(\"Two assignees returned\", () => {\r\n  const json = pm.response.json();\r\n  pm.expect(json.data.assignments).to.be.an(\"array\").with.lengthOf(2);\r\n  const lead = json.data.assignments.find(a => a.role === \"lead\");\r\n  pm.expect(lead).to.exist;\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"assignees\": [\r\n    { \"technicianId\": \"{{technicianId1}}\", \"role\": \"lead\", \"hours\": 4 },\r\n    { \"technicianId\": \"{{technicianId2}}\", \"role\": \"member\", \"hours\": 2 }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/requests/{{requestId}}/assignees",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "requests",
+                "{{requestId}}",
+                "assignees"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Assign team without lead",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 422\", () => pm.response.to.have.status(422));\r\npm.test(\"VALIDATION_ERROR about lead\", () => {\r\n  const json = pm.response.json();\r\n  pm.expect(json.error.code).to.eql(\"VALIDATION_ERROR\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"assignees\": [\r\n    { \"technicianId\": \"{{technicianId1}}\", \"role\": \"member\", \"hours\": 4 },\r\n    { \"technicianId\": \"{{technicianId2}}\", \"role\": \"member\", \"hours\": 2 }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unassign technician",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Request status history",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\r\npm.test(\"History is array with from/to statuses\", () => {\r\n  const json = pm.response.json();\r\n  pm.expect(json.data).to.be.an(\"array\");\r\n  if (json.data.length) {\r\n    pm.expect(json.data[0]).to.have.keys(\r\n      \"id\", \"requestId\", \"fromStatus\", \"toStatus\", \"author\", \"comment\", \"createdAt\"\r\n    );\r\n  }\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/requests/{{requestId}}/history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "requests",
+                "{{requestId}}",
+                "history"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transition without assignees",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 409\", () => pm.response.to.have.status(409));\r\npm.test(\"NO_ASSIGNEES\", () => {\r\n  pm.expect(pm.response.json().error.code).to.eql(\"NO_ASSIGNEES\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"status\": \"in_progress\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/requests/{{requestId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "requests",
+                "{{requestId}}",
+                "status"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -718,6 +879,120 @@
               "path": [
                 "equipment",
                 "{{equipmentId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sites",
+      "item": [
+        {
+          "name": "Site summary",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\r\npm.test(\"Has byStatus, byPriority, avgCloseHours\", () => {\r\n  const json = pm.response.json();\r\n  pm.expect(json.data).to.have.keys(\"site\", \"byStatus\", \"byPriority\", \"avgCloseHours\");\r\n});\r\npm.test(\"byStatus is array\", () => {\r\n  pm.expect(pm.response.json().data.byStatus).to.be.an(\"array\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sites/{{siteId}}/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sites",
+                "{{siteId}}",
+                "summary"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Equipment load report",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\r\npm.test(\"Report has rows\", () => {\r\n  const json = pm.response.json();\r\n  pm.expect(json.data).to.be.an(\"array\");\r\n  if (json.data.length) {\r\n    pm.expect(json.data[0]).to.have.keys(\r\n      \"equipment_id\", \"equipment_name\", \"serial_number\",\r\n      \"total_requests\", \"closed_requests\", \"total_hours\", \"last_service_at\"\r\n    );\r\n    pm.expect(json.data[0].total_requests).to.be.at.least(2); // minRequests=2\r\n  }\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reports/equipment-load?minRequests=2&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "equipment-load"
+              ],
+              "query": [
+                {
+                  "key": "minRequests",
+                  "value": "2"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Equipment load invalid query",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 422\", () => pm.response.to.have.status(422));\r\npm.test(\"VALIDATION_ERROR\", () => {\r\n  pm.expect(pm.response.json().error.code).to.eql(\"VALIDATION_ERROR\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reports/equipment-load?limit=9999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "equipment-load"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "9999"
+                }
               ]
             }
           },
