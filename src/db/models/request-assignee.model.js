@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+﻿import { DataTypes } from 'sequelize';
 import { sequelize } from '../sequelize.js';
 
 export const RequestAssignee = sequelize.define(
@@ -13,6 +13,6 @@ export const RequestAssignee = sequelize.define(
     tableName: 'request_assignees',
     underscored: true,
     timestamps: true,
-    updatedAt: false, // только created_at
+    updatedAt: false, // С‚РѕР»СЊРєРѕ created_at
   },
 );

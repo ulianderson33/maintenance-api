@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+﻿import { DataTypes } from 'sequelize';
 import { sequelize } from '../sequelize.js';
 
 export const RequestStatusHistory = sequelize.define(
@@ -21,6 +21,6 @@ export const RequestStatusHistory = sequelize.define(
     tableName: 'request_status_history',
     underscored: true,
     timestamps: true,
-    updatedAt: false, // ← записи не изменяются
+    updatedAt: false, // в†ђ Р·Р°РїРёСЃРё РЅРµ РёР·РјРµРЅСЏСЋС‚СЃСЏ
   },
 );

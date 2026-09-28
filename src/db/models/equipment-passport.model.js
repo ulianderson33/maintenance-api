@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+﻿import { DataTypes } from 'sequelize';
 import { sequelize } from '../sequelize.js';
 
 export const EquipmentPassport = sequelize.define(

@@ -1,4 +1,4 @@
-import { sequelize } from '../sequelize.js';
+﻿import { sequelize } from '../sequelize.js';
 import { setupAssociations } from './associations.js';
 
 import { Site } from './site.model.js';
