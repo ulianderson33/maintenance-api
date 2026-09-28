@@ -1,10 +1,14 @@
-import { DataTypes } from 'sequelize';
+﻿import { DataTypes } from 'sequelize';
 import { sequelize } from '../sequelize.js';
 
 export const MaintenanceRequest = sequelize.define(
   'MaintenanceRequest',
   {
-    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+    },
     equipmentId: { type: DataTypes.UUID, allowNull: false },
     title: { type: DataTypes.STRING(120), allowNull: false },
     description: { type: DataTypes.TEXT },
@@ -25,6 +29,8 @@ export const MaintenanceRequest = sequelize.define(
     tableName: 'maintenance_requests',
     underscored: true,
     timestamps: true,
+    paranoid: true,
+    deletedAt: 'deleted_at',
     indexes: [
       { fields: ['equipment_id'] },
       { fields: ['status'] },
