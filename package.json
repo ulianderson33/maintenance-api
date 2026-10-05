@@ -22,12 +22,15 @@
     "test": "node --test"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^18.0.4",
     "express": "^4.19.2",
-    "express-rate-limit": "^7.4.0",
+    "express-rate-limit": "^7.5.1",
     "helmet": "^7.1.0",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.3",
     "pg": "^8.23.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.8"
