@@ -49,6 +49,19 @@ export const config = {
     },
   },
 
+  auth: {
+    accessSecret: process.env.JWT_ACCESS_SECRET ?? 'dev_access_secret_change_me',
+    refreshSecret: process.env.JWT_REFRESH_SECRET ?? 'dev_refresh_secret_change_me',
+    accessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN ?? '15m',
+    refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN ?? '7d',
+    bcryptRounds: Number(process.env.BCRYPT_ROUNDS ?? 10),
+    cookie: {
+      secure: process.env.COOKIE_SECURE === 'true',
+      sameSite: process.env.COOKIE_SAMESITE ?? 'lax',
+      domain: process.env.COOKIE_DOMAIN || undefined,
+    },
+  },
+
   weather: {
     forecastUrl: process.env.WEATHER_API_URL ?? 'https://api.open-meteo.com/v1/forecast',
     geocodingUrl:
