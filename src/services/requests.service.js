@@ -13,7 +13,7 @@ import { ConflictError } from '../errors/ConflictError.js';
 import { ValidationError } from '../errors/ValidationError.js';
 
 // Разрешённые переходы (таблица из задания)
-const ALLOWED_TRANSITIONS = {
+export const ALLOWED_TRANSITIONS = {
   new: ['in_progress', 'rejected'],
   in_progress: ['done', 'rejected'],
   done: [],
@@ -35,6 +35,36 @@ function resolveSort(sort, order) {
   const column = SORT_MAP[sort] ?? 'created_at';
   const direction = String(order).toLowerCase() === 'asc' ? 'ASC' : 'DESC';
   return [column, direction];
+}
+
+/**
+ * Проверка правил назначения бригады.
+ * Ровно один lead, нет дубликатов специалистов, список не пуст.
+ * Экспортируется отдельно для юнит-тестов.
+ */
+export function validateAssignees(assignees) {
+  if (!Array.isArray(assignees) || assignees.length === 0) {
+    throw new ValidationError([
+      { field: 'assignees', message: 'Список исполнителей не может быть пустым' },
+    ]);
+  }
+
+  const leads = assignees.filter((a) => a.role === 'lead');
+  if (leads.length !== 1) {
+    throw new ValidationError([
+      {
+        field: 'assignees',
+        message: 'Должен быть ровно один исполнитель с ролью lead',
+      },
+    ]);
+  }
+
+  const ids = assignees.map((a) => a.technicianId);
+  if (new Set(ids).size !== ids.length) {
+    throw new ValidationError([
+      { field: 'assignees', message: 'Один специалист не может быть назначен дважды' },
+    ]);
+  }
 }
 
 // Переиспользуемые include'ы
@@ -198,28 +228,8 @@ export class RequestsService {
    * Ровно один lead обязателен (иначе 422).
    */
   async assignTeam(requestId, assignees) {
-    if (!Array.isArray(assignees) || assignees.length === 0) {
-      throw new ValidationError([
-        { field: 'assignees', message: 'Список исполнителей не может быть пустым' },
-      ]);
-    }
-
-    const leads = assignees.filter((a) => a.role === 'lead');
-    if (leads.length !== 1) {
-      throw new ValidationError([
-        {
-          field: 'assignees',
-          message: 'Должен быть ровно один исполнитель с ролью lead',
-        },
-      ]);
-    }
-
-    const ids = assignees.map((a) => a.technicianId);
-    if (new Set(ids).size !== ids.length) {
-      throw new ValidationError([
-        { field: 'assignees', message: 'Один специалист не может быть назначен дважды' },
-      ]);
-    }
+    // Все правила — в чистой функции validateAssignees
+    validateAssignees(assignees);
 
     return sequelize.transaction(async (t) => {
       const request = await MaintenanceRequest.findByPk(requestId, {
@@ -227,6 +237,8 @@ export class RequestsService {
         transaction: t,
       });
       if (!request) throw new NotFoundError('Заявка', requestId);
+
+      const ids = assignees.map((a) => a.technicianId);
 
       // Проверяем, что все специалисты существуют
       const found = await Technician.findAll({
@@ -286,8 +298,8 @@ export class RequestsService {
 
     return RequestStatusHistory.findAll({
       where: { requestId },
-      attributes: ['id', 'fromStatus', 'toStatus', 'author', 'comment', 'created_at'],
-      order: [['created_at', 'ASC']], // ← snake_case
+      attributes: ['id', 'fromStatus', 'toStatus', 'author', 'comment', 'createdAt'],
+      order: [['createdAt', 'ASC']],
     });
   }
 
