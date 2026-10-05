@@ -4,3 +4,4 @@ reports/
 *.log
 .DS_Store
 coverage/
+deploy/nginx/certs/
