@@ -8,6 +8,7 @@ import { MaintenanceRequest } from './maintenance-request.model.js';
 import { RequestStatusHistory } from './request-status-history.model.js';
 import { Technician } from './technician.model.js';
 import { RequestAssignee } from './request-assignee.model.js';
+import { User } from './user.model.js';
 
 setupAssociations();
 
@@ -20,4 +21,5 @@ export {
   RequestStatusHistory,
   Technician,
   RequestAssignee,
+  User,
 };
