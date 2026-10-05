@@ -2,26 +2,33 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
+import swaggerUi from 'swagger-ui-express';
 import { config } from './config/index.js';
 import { requestId } from './middlewares/requestId.js';
 import { requestLogger } from './middlewares/logger.js';
+import { metricsMiddleware } from './middlewares/metrics.js';
 import { apiRouter } from './routes/index.js';
+import { metricsRouter } from './routes/metrics.routes.js';
 import { notFoundHandler } from './middlewares/notFound.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import { swaggerSpec } from './docs/swagger.js';
 
 export function createApp() {
   const app = express();
 
-  // 1. Идентификатор запроса
+  if (config.isProd) {
+    app.set('trust proxy', 1);
+  }
+
   app.use(requestId);
 
-  // 2. Логирование запросов
   app.use(requestLogger);
 
-  // 3. Защитные заголовки
+  app.use(metricsMiddleware);
+
   app.use(helmet());
 
-  // 4. CORS с whitelist
   app.use(
     cors({
       origin: (origin, cb) => {
@@ -33,7 +40,7 @@ export function createApp() {
     }),
   );
 
-  // 5. Ограничение частоты
+
   app.use(
     '/api',
     rateLimit({
@@ -44,16 +51,27 @@ export function createApp() {
     }),
   );
 
-  // 6. Разбор JSON с ограничением размера
+
+  app.use(cookieParser());
+
   app.use(express.json({ limit: '100kb' }));
 
-  // 7. Маршруты
+  app.use(
+    '/api/docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      swaggerOptions: { persistAuthorization: true },
+    }),
+  );
+
+
+  app.use('/metrics', metricsRouter);
+
   app.use('/api', apiRouter);
 
-  // 8. 404
   app.use(notFoundHandler);
 
-  // 9. Централизованный обработчик ошибок
+
   app.use(errorHandler);
 
   return app;
