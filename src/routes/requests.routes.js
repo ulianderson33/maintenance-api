@@ -1,37 +1,63 @@
 import { Router } from 'express';
 import { requestsController } from '../controllers/requests.controller.js';
 import { validate } from '../middlewares/validate.js';
+import { requireRole } from '../middlewares/auth.js';
 import {
   createRequestSchema,
   updateRequestSchema,
   updateStatusSchema,
-  listRequestsQuerySchema,
   assignTeamSchema,
+  listRequestsQuerySchema,
   idParamSchema,
 } from '../validators/requests.schema.js';
 
 export const requestsRouter = Router();
 
+// ---------- Чтение — любой аутентифицированный ----------
 requestsRouter.get('/', validate(listRequestsQuerySchema), requestsController.list);
-requestsRouter.post('/', validate(createRequestSchema), requestsController.create);
 requestsRouter.get('/:id', validate(idParamSchema), requestsController.getById);
-requestsRouter.patch('/:id', validate(updateRequestSchema), requestsController.update);
+requestsRouter.get('/:id/history', validate(idParamSchema), requestsController.history);
+
+// ---------- Создание и редактирование — technician или admin ----------
+requestsRouter.post(
+  '/',
+  requireRole('technician', 'admin'),
+  validate(createRequestSchema),
+  requestsController.create,
+);
+
+requestsRouter.patch(
+  '/:id',
+  requireRole('technician', 'admin'),
+  validate(updateRequestSchema),
+  requestsController.update,
+);
+
 requestsRouter.patch(
   '/:id/status',
+  requireRole('technician', 'admin'),
   validate(updateStatusSchema),
   requestsController.updateStatus,
 );
-requestsRouter.delete('/:id', validate(idParamSchema), requestsController.remove);
 
-// Новые эндпоинты
+// ---------- Назначение бригады и удаление — только admin ----------
 requestsRouter.post(
   '/:id/assignees',
+  requireRole('admin'),
   validate(assignTeamSchema),
   requestsController.assignTeam,
 );
+
 requestsRouter.delete(
   '/:id/assignees/:userId',
+  requireRole('admin'),
   validate(idParamSchema),
   requestsController.unassign,
 );
-requestsRouter.get('/:id/history', validate(idParamSchema), requestsController.history);
+
+requestsRouter.delete(
+  '/:id',
+  requireRole('admin'),
+  validate(idParamSchema),
+  requestsController.remove,
+);
