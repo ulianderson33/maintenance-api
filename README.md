@@ -865,3 +865,35 @@ docker compose logs -f nginx
 - Нет HTTPS в базовой конфигурации (только HTTP, порт 80).
 - Refresh-токены не отзываются (stateless JWT).
 - Rate limiting в памяти (при горизонтальном масштабировании нужен Redis).
+## HTTPS
+
+Стек разворачивается с HTTPS через Nginx (порт 443) и автоматическим
+редиректом с HTTP (порт 80).
+
+### Генерация самоподписанного сертификата (для разработки)
+
+```bash
+mkdir -p deploy/nginx/certs
+docker run --rm -v "$(pwd)/deploy/nginx/certs:/certs" alpine/openssl \
+  req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout /certs/server.key -out /certs/server.crt \
+  -subj "/CN=localhost"
+```
+
+**Windows (PowerShell):**
+
+```powershell
+New-Item -ItemType Directory -Force -Path deploy\nginx\certs
+docker run --rm -v "${PWD}/deploy/nginx/certs:/certs" alpine/openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /certs/server.key -out /certs/server.crt -subj "/CN=localhost"
+```
+
+### Результат
+
+- `https://localhost` — HTTPS-эндпоинт.
+- `http://localhost` — редирект 301 на HTTPS (кроме `/nginx-health`).
+- HSTS заголовок `Strict-Transport-Security`.
+
+### В продакшене
+
+Используйте сертификат от доверенного центра (Let's Encrypt, DigiCert).
+Самоподписанный — только для разработки и демонстрации.
