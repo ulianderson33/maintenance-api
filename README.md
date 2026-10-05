@@ -749,3 +749,119 @@ npm run db:reset
 ```bash
 curl "http://localhost:3000/api/reports/equipment-load?from=2026-01-01&minRequests=2"
 ```
+## Аутентификация
+
+Регистрация: `POST /api/auth/register` — по умолчанию роль `viewer`.
+Первого администратора нужно назначить вручную:
+```sql
+UPDATE users SET role = 'admin' WHERE email = 'admin@example.com';
+```
+
+Вход: `POST /api/auth/login`. Возвращает access-токен (15 мин) и ставит cookie refresh-токена (7 дней, HttpOnly, Secure, SameSite=Lax).
+Обновление: `POST /api/auth/refresh`.
+Выход: `POST /api/auth/logout`.
+
+### Роли и права
+
+| Роль | Права |
+|---|---|
+| viewer | Чтение всех данных |
+| technician | viewer + создание/редактирование заявок + смена статуса своих заявок |
+| admin | Всё, включая управление оборудованием, площадками, специалистами и удаление |
+
+### SameSite = Lax
+
+Выбрано значение `Lax`: cookie отправляется при top-level navigation (переход по ссылке), но не при cross-site AJAX. Это блокирует CSRF через сторонние формы и XHR, но позволяет прямые переходы. В production с HTTPS устанавливается `Secure=true`.
+
+## Развёртывание
+
+```bash
+git clone https://github.com/ulianderson33/maintenance-api.git
+cd maintenance-api
+cp .env.example .env
+docker compose up -d
+docker compose exec api npm run db:migrate
+docker compose exec api npm run db:seed
+```
+
+После этого:
+- API доступен на `http://localhost/api/...` (через Nginx).
+- Swagger UI: `http://localhost/api/docs`.
+- Grafana: `http://localhost/grafana/` (admin/admin по умолчанию).
+
+### Порты
+
+- **Снаружи** открыт только **80** (Nginx).
+- API и PostgreSQL доступны только внутри Docker-сети.
+- Prometheus не публикуется.
+
+## Мониторинг
+
+### Доступ к Grafana
+
+`http://localhost/grafana/`, логин `admin`, пароль `admin` (или из `GRAFANA_ADMIN_PASSWORD`).
+
+### Панели
+
+**Технические:**
+- Request rate (по маршрутам).
+- Доля ответов 4xx / 5xx.
+- p95 времени ответа.
+- Up (liveness).
+
+**Прикладные:**
+- Заявки по статусам.
+- Заявки по приоритетам.
+- Среднее время закрытия.
+- Нагрузка на оборудование.
+- Просроченные плановые работы.
+
+### Оповещения
+
+Настроено оповещение на 5xx > 5% за 5 минут.
+
+**Порядок действий:**
+1. Открыть Grafana → панель «5xx rate».
+2. Проверить логи API: `docker compose logs api | grep ERROR`.
+3. Проверить БД: `docker compose exec db pg_isready`.
+4. Если это ошибка внешнего API — проверить доступность `api.open-meteo.com`.
+5. Откатить последний деплой: `git revert <commit> && docker compose up -d --build`.
+
+## Эксплуатация
+
+### Логи
+
+```bash
+docker compose logs -f api
+docker compose logs -f nginx
+```
+
+Логи структурированы (JSON). Уровень задаётся `LOG_LEVEL`.
+
+### Метрики
+
+- API: `http://api:3000/metrics` (внутри сети).
+- Grafana: `http://localhost/grafana/`.
+
+### Типовые отказы
+
+**БД недоступна** → `/api/health/ready` вернёт 503. Причина в логах `api`. Решение: `docker compose restart db`.
+**Рост 5xx** → панель 5xx rate в Grafana → логи api → проверить последние коммиты.
+**Переполнение диска** → `docker system df` → `docker system prune`.
+**Откат миграции** → `docker compose exec api npm run db:migrate:undo`.
+
+## Архитектурные решения
+
+- Слоистая архитектура (routes → controllers → services → repositories).
+- JWT access + refresh в HttpOnly cookie.
+- Разграничение по ролям через middleware.
+- Nginx как reverse proxy с пробросом X-Forwarded-*.
+- Метрики через prom-client + Prometheus + Grafana.
+- Структурированные JSON-логи с requestId.
+- Graceful shutdown по SIGTERM.
+
+## Ограничения
+
+- Нет HTTPS в базовой конфигурации (только HTTP, порт 80).
+- Refresh-токены не отзываются (stateless JWT).
+- Rate limiting в памяти (при горизонтальном масштабировании нужен Redis).
