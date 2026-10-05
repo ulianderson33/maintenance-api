@@ -47,20 +47,20 @@ cp .env.example .env
 
 Все параметры задаются через переменные окружения. Шаблон — `.env.example`.
 
-| Переменная | По умолчанию | Описание |
-|---|---|---|
-| `PORT` | `3000` | Порт HTTP-сервера |
-| `NODE_ENV` | `development` | Режим работы (`development` / `production` / `test`) |
-| `CORS_ORIGINS` | `http://localhost:3000,http://localhost:5173` | Список разрешённых источников через запятую |
-| `RATE_LIMIT_WINDOW_MS` | `60000` | Окно ограничения частоты запросов, мс |
-| `RATE_LIMIT_MAX` | `100` | Максимум запросов в окне с одного IP |
-| `WEATHER_API_URL` | `https://api.open-meteo.com/v1/forecast` | URL внешнего API прогноза |
-| `GEOCODING_API_URL` | `https://geocoding-api.open-meteo.com/v1/search` | URL геокодинга |
-| `REQUEST_TIMEOUT_MS` | `5000` | Таймаут запроса к внешнему API, мс |
-| `WEATHER_MAX_WIND_MS` | `10` | Порог скорости ветра для пригодности окна (м/с) |
-| `WEATHER_MAX_PRECIPITATION_MM` | `0.5` | Порог осадков для пригодности окна (мм) |
-| `DATA_DIR` | `data` | Каталог для JSON-файлов хранилища |
-| `LOG_LEVEL` | `info` | Уровень логирования (`debug` / `info` / `warn` / `error`) |
+| Переменная                     | По умолчанию                                     | Описание                                                  |
+| ------------------------------ | ------------------------------------------------ | --------------------------------------------------------- |
+| `PORT`                         | `3000`                                           | Порт HTTP-сервера                                         |
+| `NODE_ENV`                     | `development`                                    | Режим работы (`development` / `production` / `test`)      |
+| `CORS_ORIGINS`                 | `http://localhost:3000,http://localhost:5173`    | Список разрешённых источников через запятую               |
+| `RATE_LIMIT_WINDOW_MS`         | `60000`                                          | Окно ограничения частоты запросов, мс                     |
+| `RATE_LIMIT_MAX`               | `100`                                            | Максимум запросов в окне с одного IP                      |
+| `WEATHER_API_URL`              | `https://api.open-meteo.com/v1/forecast`         | URL внешнего API прогноза                                 |
+| `GEOCODING_API_URL`            | `https://geocoding-api.open-meteo.com/v1/search` | URL геокодинга                                            |
+| `REQUEST_TIMEOUT_MS`           | `5000`                                           | Таймаут запроса к внешнему API, мс                        |
+| `WEATHER_MAX_WIND_MS`          | `10`                                             | Порог скорости ветра для пригодности окна (м/с)           |
+| `WEATHER_MAX_PRECIPITATION_MM` | `0.5`                                            | Порог осадков для пригодности окна (мм)                   |
+| `DATA_DIR`                     | `data`                                           | Каталог для JSON-файлов хранилища                         |
+| `LOG_LEVEL`                    | `info`                                           | Уровень логирования (`debug` / `info` / `warn` / `error`) |
 
 ## Запуск
 
@@ -89,32 +89,32 @@ curl http://localhost:3000/api/health
 
 ### Оборудование (equipment)
 
-| Поле | Тип | Ограничения |
-|---|---|---|
-| `id` | string (UUID) | Генерируется сервером |
-| `name` | string | 3–100 символов, обязательное |
-| `type` | string | `turbine` \| `inverter` \| `sensor` \| `substation` |
-| `serialNumber` | string | Уникальный в пределах системы |
-| `location.lat` | number | -90…90 |
-| `location.lon` | number | -180…180 |
-| `status` | string | `operational` \| `maintenance` \| `fault` \| `decommissioned` |
-| `installedAt` | ISO-дата | Не в будущем |
-| `createdAt` | ISO-дата-время | Проставляется сервером |
-| `updatedAt` | ISO-дата-время | Проставляется сервером |
+| Поле           | Тип            | Ограничения                                                   |
+| -------------- | -------------- | ------------------------------------------------------------- |
+| `id`           | string (UUID)  | Генерируется сервером                                         |
+| `name`         | string         | 3–100 символов, обязательное                                  |
+| `type`         | string         | `turbine` \| `inverter` \| `sensor` \| `substation`           |
+| `serialNumber` | string         | Уникальный в пределах системы                                 |
+| `location.lat` | number         | -90…90                                                        |
+| `location.lon` | number         | -180…180                                                      |
+| `status`       | string         | `operational` \| `maintenance` \| `fault` \| `decommissioned` |
+| `installedAt`  | ISO-дата       | Не в будущем                                                  |
+| `createdAt`    | ISO-дата-время | Проставляется сервером                                        |
+| `updatedAt`    | ISO-дата-время | Проставляется сервером                                        |
 
 ### Заявка на обслуживание (maintenance request)
 
-| Поле | Тип | Ограничения |
-|---|---|---|
-| `id` | string (UUID) | Генерируется сервером |
-| `equipmentId` | string (UUID) | Ссылка на существующее оборудование |
-| `title` | string | 5–120 символов, обязательное |
-| `description` | string | До 2000 символов |
-| `priority` | string | `low` \| `medium` \| `high` \| `critical` |
-| `status` | string | `new` \| `in_progress` \| `done` \| `rejected` (по умолчанию `new`) |
-| `plannedAt` | ISO-дата-время | Необязательное |
-| `createdAt` | ISO-дата-время | Проставляется сервером |
-| `updatedAt` | ISO-дата-время | Проставляется сервером |
+| Поле          | Тип            | Ограничения                                                         |
+| ------------- | -------------- | ------------------------------------------------------------------- |
+| `id`          | string (UUID)  | Генерируется сервером                                               |
+| `equipmentId` | string (UUID)  | Ссылка на существующее оборудование                                 |
+| `title`       | string         | 5–120 символов, обязательное                                        |
+| `description` | string         | До 2000 символов                                                    |
+| `priority`    | string         | `low` \| `medium` \| `high` \| `critical`                           |
+| `status`      | string         | `new` \| `in_progress` \| `done` \| `rejected` (по умолчанию `new`) |
+| `plannedAt`   | ISO-дата-время | Необязательное                                                      |
+| `createdAt`   | ISO-дата-время | Проставляется сервером                                              |
+| `updatedAt`   | ISO-дата-время | Проставляется сервером                                              |
 
 Поля `id`, `createdAt`, `updatedAt` **не могут быть изменены через API**.
 Неизвестные поля в теле запроса **игнорируются** (валидатор отбрасывает их
@@ -133,12 +133,12 @@ new ──────► in_progress ──────► done
  └──────────► rejected
 ```
 
-| Из | В |
-|---|---|
-| `new` | `in_progress`, `rejected` |
-| `in_progress` | `done`, `rejected` |
-| `done` | — (терминальное) |
-| `rejected` | — (терминальное) |
+| Из            | В                         |
+| ------------- | ------------------------- |
+| `new`         | `in_progress`, `rejected` |
+| `in_progress` | `done`, `rejected`        |
+| `done`        | — (терминальное)          |
+| `rejected`    | — (терминальное)          |
 
 Недопустимый переход возвращает **409 Conflict** с кодом `INVALID_STATUS_TRANSITION`.
 Смена статуса выполняется отдельным эндпоинтом `PATCH /api/requests/:id/status`.
@@ -149,39 +149,39 @@ new ──────► in_progress ──────► done
 
 Все запросы к API начинаются с `/api`.
 
-| Метод | Путь | Назначение |
-|---|---|---|
-| `GET` | `/api/health` | Проверка доступности сервиса |
-| `GET` | `/api/equipment` | Список оборудования (фильтры, сортировка, пагинация) |
-| `POST` | `/api/equipment` | Создание единицы оборудования |
-| `GET` | `/api/equipment/:id` | Карточка оборудования |
-| `PATCH` | `/api/equipment/:id` | Частичное обновление |
-| `DELETE` | `/api/equipment/:id` | Удаление (409 при наличии открытых заявок) |
-| `GET` | `/api/equipment/:id/requests` | Заявки по оборудованию |
-| `GET` | `/api/equipment/:id/weather` | Прогноз погоды и пригодность окна |
-| `GET` | `/api/requests` | Список заявок (фильтры, сортировка, пагинация) |
-| `POST` | `/api/requests` | Создание заявки |
-| `GET` | `/api/requests/:id` | Карточка заявки |
-| `PATCH` | `/api/requests/:id` | Редактирование полей заявки |
-| `PATCH` | `/api/requests/:id/status` | Смена статуса с проверкой перехода |
-| `DELETE` | `/api/requests/:id` | Удаление заявки |
+| Метод    | Путь                          | Назначение                                           |
+| -------- | ----------------------------- | ---------------------------------------------------- |
+| `GET`    | `/api/health`                 | Проверка доступности сервиса                         |
+| `GET`    | `/api/equipment`              | Список оборудования (фильтры, сортировка, пагинация) |
+| `POST`   | `/api/equipment`              | Создание единицы оборудования                        |
+| `GET`    | `/api/equipment/:id`          | Карточка оборудования                                |
+| `PATCH`  | `/api/equipment/:id`          | Частичное обновление                                 |
+| `DELETE` | `/api/equipment/:id`          | Удаление (409 при наличии открытых заявок)           |
+| `GET`    | `/api/equipment/:id/requests` | Заявки по оборудованию                               |
+| `GET`    | `/api/equipment/:id/weather`  | Прогноз погоды и пригодность окна                    |
+| `GET`    | `/api/requests`               | Список заявок (фильтры, сортировка, пагинация)       |
+| `POST`   | `/api/requests`               | Создание заявки                                      |
+| `GET`    | `/api/requests/:id`           | Карточка заявки                                      |
+| `PATCH`  | `/api/requests/:id`           | Редактирование полей заявки                          |
+| `PATCH`  | `/api/requests/:id/status`    | Смена статуса с проверкой перехода                   |
+| `DELETE` | `/api/requests/:id`           | Удаление заявки                                      |
 
 ### Параметры пагинации и сортировки
 
 Для `GET /api/equipment` и `GET /api/requests`:
 
-| Параметр | Значения | По умолчанию |
-|---|---|---|
-| `page` | целое ≥ 1 | `1` |
-| `limit` | целое 1–100 | `20` |
-| `sort` | `createdAt` \| `updatedAt` \| ... | `createdAt` |
-| `order` | `asc` \| `desc` | `desc` |
+| Параметр | Значения                          | По умолчанию |
+| -------- | --------------------------------- | ------------ |
+| `page`   | целое ≥ 1                         | `1`          |
+| `limit`  | целое 1–100                       | `20`         |
+| `sort`   | `createdAt` \| `updatedAt` \| ... | `createdAt`  |
+| `order`  | `asc` \| `desc`                   | `desc`       |
 
 Ответ списочных эндпоинтов:
 
 ```json
 {
-  "data": [ /* массив объектов */ ],
+  "data": [/* массив объектов */],
   "meta": { "total": 42, "page": 1, "limit": 20 }
 }
 ```
@@ -207,36 +207,34 @@ new ──────► in_progress ──────► done
   "error": {
     "code": "VALIDATION_ERROR",
     "message": "Некорректные данные запроса",
-    "details": [
-      { "field": "priority", "message": "Недопустимое значение" }
-    ],
+    "details": [{ "field": "priority", "message": "Недопустимое значение" }],
     "requestId": "b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
   }
 }
 ```
 
-| Поле | Описание |
-|---|---|
-| `code` | Машиночитаемый код ошибки |
-| `message` | Человекочитаемое сообщение |
-| `details` | Массив некорректных полей (только для `VALIDATION_ERROR`) |
-| `requestId` | Идентификатор запроса для поиска в логах |
+| Поле        | Описание                                                  |
+| ----------- | --------------------------------------------------------- |
+| `code`      | Машиночитаемый код ошибки                                 |
+| `message`   | Человекочитаемое сообщение                                |
+| `details`   | Массив некорректных полей (только для `VALIDATION_ERROR`) |
+| `requestId` | Идентификатор запроса для поиска в логах                  |
 
 Коды ошибок:
 
-| HTTP | `code` | Когда возникает |
-|---|---|---|
-| 400 | `BAD_REQUEST` | Некорректный запрос |
-| 404 | `NOT_FOUND` | Ресурс не найден |
-| 409 | `SERIAL_NUMBER_CONFLICT` | Дубликат `serialNumber` |
-| 409 | `EQUIPMENT_HAS_OPEN_REQUESTS` | Удаление оборудования с открытыми заявками |
-| 409 | `INVALID_STATUS_TRANSITION` | Недопустимый переход статуса |
-| 422 | `VALIDATION_ERROR` | Тело/параметры не прошли валидацию |
-| 429 | `TOO_MANY_REQUESTS` | Превышен лимит частоты запросов |
-| 500 | `INTERNAL_ERROR` | Внутренняя ошибка сервера |
-| 502 | `UPSTREAM_ERROR` / `UPSTREAM_BAD_JSON` | Ошибка внешнего API |
-| 503 | `UPSTREAM_UNAVAILABLE` | Внешний API недоступен |
-| 504 | `UPSTREAM_TIMEOUT` | Превышен таймаут внешнего API |
+| HTTP | `code`                                 | Когда возникает                            |
+| ---- | -------------------------------------- | ------------------------------------------ |
+| 400  | `BAD_REQUEST`                          | Некорректный запрос                        |
+| 404  | `NOT_FOUND`                            | Ресурс не найден                           |
+| 409  | `SERIAL_NUMBER_CONFLICT`               | Дубликат `serialNumber`                    |
+| 409  | `EQUIPMENT_HAS_OPEN_REQUESTS`          | Удаление оборудования с открытыми заявками |
+| 409  | `INVALID_STATUS_TRANSITION`            | Недопустимый переход статуса               |
+| 422  | `VALIDATION_ERROR`                     | Тело/параметры не прошли валидацию         |
+| 429  | `TOO_MANY_REQUESTS`                    | Превышен лимит частоты запросов            |
+| 500  | `INTERNAL_ERROR`                       | Внутренняя ошибка сервера                  |
+| 502  | `UPSTREAM_ERROR` / `UPSTREAM_BAD_JSON` | Ошибка внешнего API                        |
+| 503  | `UPSTREAM_UNAVAILABLE`                 | Внешний API недоступен                     |
+| 504  | `UPSTREAM_TIMEOUT`                     | Превышен таймаут внешнего API              |
 
 В режиме `NODE_ENV=production` стек-трейсы и внутренние сообщения в ответ
 не попадают.
@@ -300,7 +298,10 @@ Content-Type: application/json
     "code": "VALIDATION_ERROR",
     "message": "Некорректные данные запроса",
     "details": [
-      { "field": "name", "message": "\"name\" length must be at least 3 characters long" },
+      {
+        "field": "name",
+        "message": "\"name\" length must be at least 3 characters long"
+      },
       { "field": "type", "message": "\"type\" is required" }
     ],
     "requestId": "d2e3..."
@@ -469,15 +470,15 @@ maintenance-api/
 
 ## Скрипты
 
-| Команда | Действие |
-|---|---|
-| `npm start` | Запуск сервера |
-| `npm run dev` | Запуск с автоперезапуском (`node --watch`) |
-| `npm run lint` | Проверка ESLint |
-| `npm run lint:fix` | ESLint с автоисправлением |
-| `npm run format` | Форматирование Prettier |
-| `npm run format:check` | Проверка форматирования |
-| `npm test` | Запуск тестов |
+| Команда                | Действие                                   |
+| ---------------------- | ------------------------------------------ |
+| `npm start`            | Запуск сервера                             |
+| `npm run dev`          | Запуск с автоперезапуском (`node --watch`) |
+| `npm run lint`         | Проверка ESLint                            |
+| `npm run lint:fix`     | ESLint с автоисправлением                  |
+| `npm run format`       | Форматирование Prettier                    |
+| `npm run format:check` | Проверка форматирования                    |
+| `npm test`             | Запуск тестов                              |
 
 ---
 
@@ -576,25 +577,25 @@ docker compose up --build
 
 ### Описание таблиц
 
-| Таблица | Назначение | Ключевые ограничения |
-|---|---|---|
-| `sites` | Производственные площадки | `code` UNIQUE |
-| `equipment` | Оборудование на площадках | `serial_number` UNIQUE, `site_id` FK ON DELETE RESTRICT |
-| `equipment_passports` | Паспорта (1:1) | `equipment_id` UNIQUE, FK ON DELETE CASCADE |
-| `maintenance_requests` | Заявки на обслуживание | `equipment_id` FK ON DELETE RESTRICT |
-| `request_status_history` | Журнал смены статусов (append-only) | нет `updated_at`, записи не редактируются |
-| `technicians` | Специалисты | `employee_number` UNIQUE |
-| `request_assignees` | Назначения бригад (N:M) | составной PK `(request_id, technician_id)`, `hours > 0` |
+| Таблица                  | Назначение                          | Ключевые ограничения                                    |
+| ------------------------ | ----------------------------------- | ------------------------------------------------------- |
+| `sites`                  | Производственные площадки           | `code` UNIQUE                                           |
+| `equipment`              | Оборудование на площадках           | `serial_number` UNIQUE, `site_id` FK ON DELETE RESTRICT |
+| `equipment_passports`    | Паспорта (1:1)                      | `equipment_id` UNIQUE, FK ON DELETE CASCADE             |
+| `maintenance_requests`   | Заявки на обслуживание              | `equipment_id` FK ON DELETE RESTRICT                    |
+| `request_status_history` | Журнал смены статусов (append-only) | нет `updated_at`, записи не редактируются               |
+| `technicians`            | Специалисты                         | `employee_number` UNIQUE                                |
+| `request_assignees`      | Назначения бригад (N:M)             | составной PK `(request_id, technician_id)`, `hours > 0` |
 
 ### Связи
 
-| Связь | Тип | Реализация |
-|---|---|---|
-| `sites` → `equipment` | 1:N | `equipment.site_id` — FK |
-| `equipment` → `equipment_passports` | 1:1 | `equipment_passports.equipment_id` — UNIQUE FK |
-| `equipment` → `maintenance_requests` | 1:N | `maintenance_requests.equipment_id` — FK |
-| `maintenance_requests` → `request_status_history` | 1:N | `request_status_history.request_id` — FK |
-| `maintenance_requests` ↔ `technicians` | N:M | через `request_assignees` с полями `role`, `hours` |
+| Связь                                             | Тип | Реализация                                         |
+| ------------------------------------------------- | --- | -------------------------------------------------- |
+| `sites` → `equipment`                             | 1:N | `equipment.site_id` — FK                           |
+| `equipment` → `equipment_passports`               | 1:1 | `equipment_passports.equipment_id` — UNIQUE FK     |
+| `equipment` → `maintenance_requests`              | 1:N | `maintenance_requests.equipment_id` — FK           |
+| `maintenance_requests` → `request_status_history` | 1:N | `request_status_history.request_id` — FK           |
+| `maintenance_requests` ↔ `technicians`            | N:M | через `request_assignees` с полями `role`, `hours` |
 
 ### Обоснование третьей нормальной формы (3НФ)
 
@@ -607,14 +608,14 @@ docker compose up --build
 
 ### Правила `ON DELETE`
 
-| Связь | Правило | Почему |
-|---|---|---|
-| `equipment.site_id` | `RESTRICT` | Нельзя удалить площадку с оборудованием |
-| `equipment_passports.equipment_id` | `CASCADE` | Паспорт не имеет смысла без оборудования |
+| Связь                               | Правило    | Почему                                                                               |
+| ----------------------------------- | ---------- | ------------------------------------------------------------------------------------ |
+| `equipment.site_id`                 | `RESTRICT` | Нельзя удалить площадку с оборудованием                                              |
+| `equipment_passports.equipment_id`  | `CASCADE`  | Паспорт не имеет смысла без оборудования                                             |
 | `maintenance_requests.equipment_id` | `RESTRICT` | Нельзя удалить оборудование с заявками (дополнительно проверяется в сервисе для 409) |
-| `request_status_history.request_id` | `CASCADE` | История удаляется вместе с заявкой |
-| `request_assignees.request_id` | `CASCADE` | Назначения удаляются вместе с заявкой |
-| `request_assignees.technician_id` | `RESTRICT` | Нельзя удалить специалиста, назначенного на заявки |
+| `request_status_history.request_id` | `CASCADE`  | История удаляется вместе с заявкой                                                   |
+| `request_assignees.request_id`      | `CASCADE`  | Назначения удаляются вместе с заявкой                                                |
+| `request_assignees.technician_id`   | `RESTRICT` | Нельзя удалить специалиста, назначенного на заявки                                   |
 
 ## Развёртывание с нуля
 
@@ -704,6 +705,7 @@ npm run db:reset
 ### Сводка по площадке — `GET /api/sites/:id/summary`
 
 Возвращает:
+
 - количество заявок в разрезе статусов;
 - количество заявок в разрезе приоритетов;
 - среднее время закрытия заявки в часах.
@@ -713,7 +715,12 @@ npm run db:reset
 ```json
 {
   "data": {
-    "site": { "id": "...", "name": "Северный ветропарк", "code": "WP-NORTH", "region": "Мурманская обл." },
+    "site": {
+      "id": "...",
+      "name": "Северный ветропарк",
+      "code": "WP-NORTH",
+      "region": "Мурманская обл."
+    },
     "byStatus": [
       { "status": "new", "count": 5 },
       { "status": "in_progress", "count": 3 },
@@ -731,12 +738,14 @@ npm run db:reset
 ### Отчёт по нагрузке на оборудование — `GET /api/reports/equipment-load`
 
 Параметры запроса:
+
 - `from` — начало периода (ISO-дата, опционально);
 - `to` — конец периода (ISO-дата, опционально);
 - `minRequests` — минимальное число заявок (фильтрация групп, `HAVING`, по умолчанию 1);
 - `page`, `limit` — пагинация.
 
 Для каждого оборудования возвращает:
+
 - `total_requests` — общее число заявок;
 - `closed_requests` — число закрытых (`closed_at IS NOT NULL`);
 - `total_hours` — суммарные плановые трудозатраты (сумма `request_assignees.hours`);
@@ -749,10 +758,12 @@ npm run db:reset
 ```bash
 curl "http://localhost:3000/api/reports/equipment-load?from=2026-01-01&minRequests=2"
 ```
+
 ## Аутентификация
 
 Регистрация: `POST /api/auth/register` — по умолчанию роль `viewer`.
 Первого администратора нужно назначить вручную:
+
 ```sql
 UPDATE users SET role = 'admin' WHERE email = 'admin@example.com';
 ```
@@ -763,11 +774,11 @@ UPDATE users SET role = 'admin' WHERE email = 'admin@example.com';
 
 ### Роли и права
 
-| Роль | Права |
-|---|---|
-| viewer | Чтение всех данных |
-| technician | viewer + создание/редактирование заявок + смена статуса своих заявок |
-| admin | Всё, включая управление оборудованием, площадками, специалистами и удаление |
+| Роль       | Права                                                                       |
+| ---------- | --------------------------------------------------------------------------- |
+| viewer     | Чтение всех данных                                                          |
+| technician | viewer + создание/редактирование заявок + смена статуса своих заявок        |
+| admin      | Всё, включая управление оборудованием, площадками, специалистами и удаление |
 
 ### SameSite = Lax
 
@@ -785,6 +796,7 @@ docker compose exec api npm run db:seed
 ```
 
 После этого:
+
 - API доступен на `http://localhost/api/...` (через Nginx).
 - Swagger UI: `http://localhost/api/docs`.
 - Grafana: `http://localhost/grafana/` (admin/admin по умолчанию).
@@ -804,12 +816,14 @@ docker compose exec api npm run db:seed
 ### Панели
 
 **Технические:**
+
 - Request rate (по маршрутам).
 - Доля ответов 4xx / 5xx.
 - p95 времени ответа.
 - Up (liveness).
 
 **Прикладные:**
+
 - Заявки по статусам.
 - Заявки по приоритетам.
 - Среднее время закрытия.
@@ -821,6 +835,7 @@ docker compose exec api npm run db:seed
 Настроено оповещение на 5xx > 5% за 5 минут.
 
 **Порядок действий:**
+
 1. Открыть Grafana → панель «5xx rate».
 2. Проверить логи API: `docker compose logs api | grep ERROR`.
 3. Проверить БД: `docker compose exec db pg_isready`.
@@ -865,6 +880,7 @@ docker compose logs -f nginx
 - Нет HTTPS в базовой конфигурации (только HTTP, порт 80).
 - Refresh-токены не отзываются (stateless JWT).
 - Rate limiting в памяти (при горизонтальном масштабировании нужен Redis).
+
 ## HTTPS
 
 Стек разворачивается с HTTPS через Nginx (порт 443) и автоматическим

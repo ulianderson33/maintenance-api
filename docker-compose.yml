@@ -11,11 +11,12 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     # Порт открыт для разработки/тестов с хоста. В продакшене можно убрать.
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - '${DB_PORT:-5432}:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-maintenance} -d ${DB_NAME:-maintenance}"]
+      test:
+        ['CMD-SHELL', 'pg_isready -U ${DB_USER:-maintenance} -d ${DB_NAME:-maintenance}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -36,11 +37,11 @@ services:
         condition: service_healthy
     # Порт НЕ публикуем наружу — только через nginx
     expose:
-      - "3000"
+      - '3000'
     environment:
       NODE_ENV: production
       PORT: 3000
-      TRUST_PROXY: "1"
+      TRUST_PROXY: '1'
 
       # База данных
       DB_HOST: db
@@ -80,7 +81,7 @@ services:
       # Логи
       LOG_LEVEL: ${LOG_LEVEL:-info}
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3000/api/health']
       interval: 30s
       timeout: 5s
       retries: 3
@@ -97,14 +98,14 @@ services:
       api:
         condition: service_started
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./deploy/nginx/conf.d:/etc/nginx/conf.d:ro
       - ./deploy/nginx/certs:/etc/nginx/certs:ro
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost/nginx-health"]
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost/nginx-health']
       interval: 30s
       timeout: 5s
       retries: 3
@@ -123,7 +124,7 @@ services:
       - ./deploy/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-data:/prometheus
     expose:
-      - "9090"
+      - '9090'
     networks:
       - backend
 
@@ -138,9 +139,9 @@ services:
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
-      GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s/grafana/"
-      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
-      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: '%(protocol)s://%(domain)s/grafana/'
+      GF_SERVER_SERVE_FROM_SUB_PATH: 'true'
+      GF_USERS_ALLOW_SIGN_UP: 'false'
       # Для Grafana Postgres datasource
       DB_NAME: ${DB_NAME:-maintenance}
       DB_USER: ${DB_USER:-maintenance}
@@ -150,7 +151,7 @@ services:
       - ./deploy/grafana/provisioning:/etc/grafana/provisioning:ro
       - ./deploy/grafana/dashboards:/var/lib/grafana/dashboards:ro
     expose:
-      - "3000"
+      - '3000'
     networks:
       - backend
 

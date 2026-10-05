@@ -5,9 +5,7 @@ const id = Joi.string().uuid();
 export const createEquipmentSchema = {
   body: Joi.object({
     name: Joi.string().min(3).max(100).required(),
-    type: Joi.string()
-      .valid('turbine', 'inverter', 'sensor', 'substation')
-      .required(),
+    type: Joi.string().valid('turbine', 'inverter', 'sensor', 'substation').required(),
     serialNumber: Joi.string().min(1).max(100).required(),
     siteId: id.required(),
     status: Joi.string()
@@ -25,7 +23,9 @@ export const updateEquipmentSchema = {
     siteId: id,
     status: Joi.string().valid('operational', 'maintenance', 'fault', 'decommissioned'),
     installedAt: Joi.date().iso().max('now'),
-  }).min(1).unknown(false),
+  })
+    .min(1)
+    .unknown(false),
 };
 
 export const idParamSchema = {
@@ -39,7 +39,9 @@ export const listEquipmentQuerySchema = {
     siteId: id,
     page: Joi.number().integer().min(1).default(1),
     limit: Joi.number().integer().min(1).max(100).default(20),
-    sort: Joi.string().valid('name', 'installedAt', 'createdAt', 'serialNumber').default('createdAt'),
+    sort: Joi.string()
+      .valid('name', 'installedAt', 'createdAt', 'serialNumber')
+      .default('createdAt'),
     order: Joi.string().valid('asc', 'desc').default('desc'),
   }),
 };

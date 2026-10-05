@@ -26,12 +26,12 @@ const base = {
   port: Number(process.env.DB_PORT || 5432),
   dialect: 'postgres',
   logging: false,
-define: {
-  underscored: true,
-  timestamps: true,
-  createdAt: 'created_at',
-  updatedAt: 'updated_at',
-},
+  define: {
+    underscored: true,
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  },
   pool: {
     max: Number(process.env.DB_POOL_MAX || 10),
     min: Number(process.env.DB_POOL_MIN || 0),

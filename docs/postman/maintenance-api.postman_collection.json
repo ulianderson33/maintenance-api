@@ -28,12 +28,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/health",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "health"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
             }
           },
           "response": []
@@ -70,12 +66,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/equipment",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "equipment"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["equipment"]
             }
           },
           "response": []
@@ -98,12 +90,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/equipment",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "equipment"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["equipment"]
             }
           },
           "response": []
@@ -126,13 +114,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/equipment/{{equipmentId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "equipment",
-                "{{equipmentId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["equipment", "{{equipmentId}}"]
             }
           },
           "response": []
@@ -164,13 +147,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/equipment/{{equipmentId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "equipment",
-                "{{equipmentId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["equipment", "{{equipmentId}}"]
             }
           },
           "response": []
@@ -193,14 +171,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/equipment/{{equipmentId}}/requests",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "equipment",
-                "{{equipmentId}}",
-                "requests"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["equipment", "{{equipmentId}}", "requests"]
             }
           },
           "response": []
@@ -223,14 +195,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/equipment/{{equipmentId}}/weather?days=3",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "equipment",
-                "{{equipmentId}}",
-                "weather"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["equipment", "{{equipmentId}}", "weather"],
               "query": [
                 {
                   "key": "days",
@@ -284,12 +250,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/requests",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "requests"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["requests"]
             }
           },
           "response": []
@@ -312,12 +274,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/requests?status=new&priority=high&page=1&limit=10&sort=createdAt&order=desc",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "requests"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["requests"],
               "query": [
                 {
                   "key": "status",
@@ -366,13 +324,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/requests/{{requestId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "requests",
-                "{{requestId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["requests", "{{requestId}}"]
             }
           },
           "response": []
@@ -404,13 +357,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/requests/{{requestId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "requests",
-                "{{requestId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["requests", "{{requestId}}"]
             }
           },
           "response": []
@@ -442,14 +390,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/requests/{{requestId}}/status",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "requests",
-                "{{requestId}}",
-                "status"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["requests", "{{requestId}}", "status"]
             }
           },
           "response": []
@@ -481,14 +423,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/requests/{{requestId}}/assignees",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "requests",
-                "{{requestId}}",
-                "assignees"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["requests", "{{requestId}}", "assignees"]
             }
           },
           "response": []
@@ -564,14 +500,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/requests/{{requestId}}/history",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "requests",
-                "{{requestId}}",
-                "history"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["requests", "{{requestId}}", "history"]
             }
           },
           "response": []
@@ -603,14 +533,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/requests/{{requestId}}/status",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "requests",
-                "{{requestId}}",
-                "status"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["requests", "{{requestId}}", "status"]
             }
           },
           "response": []
@@ -647,14 +571,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/requests/{{requestId}}/status",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "requests",
-                "{{requestId}}",
-                "status"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["requests", "{{requestId}}", "status"]
             }
           },
           "response": []
@@ -686,12 +604,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/equipment",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "equipment"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["equipment"]
             }
           },
           "response": []
@@ -714,13 +628,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/equipment/00000000-0000-0000-0000-000000000000",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "equipment",
-                "00000000-0000-0000-0000-000000000000"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["equipment", "00000000-0000-0000-0000-000000000000"]
             }
           },
           "response": []
@@ -743,12 +652,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/unknown-route",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "unknown-route"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["unknown-route"]
             }
           },
           "response": []
@@ -780,12 +685,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/equipment",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "equipment"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["equipment"]
             }
           },
           "response": []
@@ -817,12 +718,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/requests",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "requests"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["requests"]
             }
           },
           "response": []
@@ -845,12 +742,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/health",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "health"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
             }
           },
           "response": []
@@ -873,13 +766,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/equipment/{{equipmentId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "equipment",
-                "{{equipmentId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["equipment", "{{equipmentId}}"]
             }
           },
           "response": []
@@ -907,14 +795,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/sites/{{siteId}}/summary",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "sites",
-                "{{siteId}}",
-                "summary"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["sites", "{{siteId}}", "summary"]
             }
           },
           "response": []
@@ -942,13 +824,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/reports/equipment-load?minRequests=2&limit=10",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "reports",
-                "equipment-load"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "equipment-load"],
               "query": [
                 {
                   "key": "minRequests",
@@ -981,13 +858,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/reports/equipment-load?limit=9999",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "reports",
-                "equipment-load"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "equipment-load"],
               "query": [
                 {
                   "key": "limit",

@@ -9,7 +9,7 @@ async function main() {
     await testConnection();
   } catch (err) {
     logger.error('db_connection_failed', { message: err.message });
-    process.exit(1);  // ← не падаем молча
+    process.exit(1); // ← не падаем молча
   }
 
   const app = createApp();

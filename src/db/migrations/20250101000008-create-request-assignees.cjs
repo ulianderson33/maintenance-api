@@ -27,7 +27,11 @@ module.exports = {
         type: Sequelize.DECIMAL(6, 2),
         allowNull: false,
       },
-      created_at: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.fn('NOW') },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn('NOW'),
+      },
     });
 
     // CHECK-ограничение: hours > 0

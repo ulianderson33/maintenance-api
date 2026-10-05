@@ -25,7 +25,11 @@ module.exports = {
       },
       author: { type: Sequelize.STRING(200), allowNull: false },
       comment: { type: Sequelize.TEXT },
-      created_at: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.fn('NOW') },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn('NOW'),
+      },
     });
 
     await queryInterface.addIndex('request_status_history', ['request_id', 'created_at']);

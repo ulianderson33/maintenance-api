@@ -20,8 +20,16 @@ module.exports = {
       model: { type: Sequelize.STRING(200), allowNull: false },
       rated_power_kw: { type: Sequelize.DECIMAL(10, 2), allowNull: false },
       last_inspection_at: { type: Sequelize.DATEONLY, allowNull: false },
-      created_at: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.fn('NOW') },
-      updated_at: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.fn('NOW') },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn('NOW'),
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn('NOW'),
+      },
     });
   },
 

@@ -15,8 +15,14 @@ export function setupAssociations() {
   Equipment.hasMany(MaintenanceRequest, { foreignKey: 'equipmentId', as: 'requests' });
   MaintenanceRequest.belongsTo(Equipment, { foreignKey: 'equipmentId', as: 'equipment' });
 
-  MaintenanceRequest.hasMany(RequestStatusHistory, { foreignKey: 'requestId', as: 'history' });
-  RequestStatusHistory.belongsTo(MaintenanceRequest, { foreignKey: 'requestId', as: 'request' });
+  MaintenanceRequest.hasMany(RequestStatusHistory, {
+    foreignKey: 'requestId',
+    as: 'history',
+  });
+  RequestStatusHistory.belongsTo(MaintenanceRequest, {
+    foreignKey: 'requestId',
+    as: 'request',
+  });
 
   MaintenanceRequest.belongsToMany(Technician, {
     through: RequestAssignee,
@@ -31,8 +37,14 @@ export function setupAssociations() {
     as: 'requests',
   });
 
-  MaintenanceRequest.hasMany(RequestAssignee, { foreignKey: 'requestId', as: 'assignments' });
-  RequestAssignee.belongsTo(MaintenanceRequest, { foreignKey: 'requestId', as: 'request' });
+  MaintenanceRequest.hasMany(RequestAssignee, {
+    foreignKey: 'requestId',
+    as: 'assignments',
+  });
+  RequestAssignee.belongsTo(MaintenanceRequest, {
+    foreignKey: 'requestId',
+    as: 'request',
+  });
   RequestAssignee.belongsTo(Technician, { foreignKey: 'technicianId', as: 'technician' });
   Technician.hasMany(RequestAssignee, { foreignKey: 'technicianId', as: 'assignments' });
 }

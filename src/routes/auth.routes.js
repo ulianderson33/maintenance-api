@@ -8,21 +8,22 @@ import { config } from '../config/index.js';
 export const authRouter = Router();
 
 // В тестах rate limit отключён
-const loginLimiter = config.nodeEnv === 'test'
-  ? (_req, _res, next) => next()
-  : rateLimit({
-      windowMs: 15 * 60 * 1000,
-      max: 5,
-      standardHeaders: true,
-      legacyHeaders: false,
-      skipSuccessfulRequests: true,
-      message: {
-        error: {
-          code: 'TOO_MANY_REQUESTS',
-          message: 'Слишком много попыток входа. Попробуйте позже.',
+const loginLimiter =
+  config.nodeEnv === 'test'
+    ? (_req, _res, next) => next()
+    : rateLimit({
+        windowMs: 15 * 60 * 1000,
+        max: 5,
+        standardHeaders: true,
+        legacyHeaders: false,
+        skipSuccessfulRequests: true,
+        message: {
+          error: {
+            code: 'TOO_MANY_REQUESTS',
+            message: 'Слишком много попыток входа. Попробуйте позже.',
+          },
         },
-      },
-    });
+      });
 
 authRouter.post('/register', validate(registerSchema), authController.register);
 authRouter.post('/login', loginLimiter, validate(loginSchema), authController.login);

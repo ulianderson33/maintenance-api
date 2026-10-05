@@ -9,31 +9,104 @@ module.exports = {
 
     // ---------- Площадки ----------
     const sites = [
-      { id: randomUUID(), name: 'Северный ветропарк', code: 'WP-NORTH', region: 'Мурманская обл.', latitude: 68.97, longitude: 33.08 },
-      { id: randomUUID(), name: 'Южный ветропарк', code: 'WP-SOUTH', region: 'Ростовская обл.', latitude: 47.23, longitude: 39.72 },
-      { id: randomUUID(), name: 'Прикаспийская СЭС', code: 'SP-CASPIAN', region: 'Астраханская обл.', latitude: 46.35, longitude: 48.05 },
+      {
+        id: randomUUID(),
+        name: 'Северный ветропарк',
+        code: 'WP-NORTH',
+        region: 'Мурманская обл.',
+        latitude: 68.97,
+        longitude: 33.08,
+      },
+      {
+        id: randomUUID(),
+        name: 'Южный ветропарк',
+        code: 'WP-SOUTH',
+        region: 'Ростовская обл.',
+        latitude: 47.23,
+        longitude: 39.72,
+      },
+      {
+        id: randomUUID(),
+        name: 'Прикаспийская СЭС',
+        code: 'SP-CASPIAN',
+        region: 'Астраханская обл.',
+        latitude: 46.35,
+        longitude: 48.05,
+      },
     ];
 
-    await queryInterface.bulkInsert('sites', sites.map((s) => ({
-      ...s,
+    await queryInterface.bulkInsert(
+      'sites',
+      sites.map((s) => ({
+        ...s,
+        created_at: now,
+        updated_at: now,
+      })),
+    );
+
+    const equipment = [
+      {
+        site_id: sites[0].id,
+        name: 'Turbine A1',
+        type: 'turbine',
+        serial_number: 'SN-N-001',
+        status: 'operational',
+        installed_at: '2020-05-15',
+      },
+      {
+        site_id: sites[0].id,
+        name: 'Turbine A2',
+        type: 'turbine',
+        serial_number: 'SN-N-002',
+        status: 'maintenance',
+        installed_at: '2020-05-20',
+      },
+      {
+        site_id: sites[0].id,
+        name: 'Inverter I1',
+        type: 'inverter',
+        serial_number: 'SN-N-003',
+        status: 'operational',
+        installed_at: '2021-03-10',
+      },
+      {
+        site_id: sites[1].id,
+        name: 'Turbine B1',
+        type: 'turbine',
+        serial_number: 'SN-S-001',
+        status: 'fault',
+        installed_at: '2019-08-01',
+      },
+      {
+        site_id: sites[1].id,
+        name: 'Turbine B2',
+        type: 'turbine',
+        serial_number: 'SN-S-002',
+        status: 'operational',
+        installed_at: '2019-08-05',
+      },
+      {
+        site_id: sites[2].id,
+        name: 'Sensor S1',
+        type: 'sensor',
+        serial_number: 'SN-C-001',
+        status: 'operational',
+        installed_at: '2022-01-20',
+      },
+      {
+        site_id: sites[2].id,
+        name: 'Substation C1',
+        type: 'substation',
+        serial_number: 'SN-C-002',
+        status: 'operational',
+        installed_at: '2022-02-01',
+      },
+    ].map((e) => ({
+      id: randomUUID(),
+      ...e,
       created_at: now,
       updated_at: now,
-    })));
-
-  const equipment = [
-  { site_id: sites[0].id, name: 'Turbine A1', type: 'turbine', serial_number: 'SN-N-001', status: 'operational', installed_at: '2020-05-15' },
-  { site_id: sites[0].id, name: 'Turbine A2', type: 'turbine', serial_number: 'SN-N-002', status: 'maintenance', installed_at: '2020-05-20' },
-  { site_id: sites[0].id, name: 'Inverter I1', type: 'inverter', serial_number: 'SN-N-003', status: 'operational', installed_at: '2021-03-10' },
-  { site_id: sites[1].id, name: 'Turbine B1', type: 'turbine', serial_number: 'SN-S-001', status: 'fault', installed_at: '2019-08-01' },
-  { site_id: sites[1].id, name: 'Turbine B2', type: 'turbine', serial_number: 'SN-S-002', status: 'operational', installed_at: '2019-08-05' },
-  { site_id: sites[2].id, name: 'Sensor S1', type: 'sensor', serial_number: 'SN-C-001', status: 'operational', installed_at: '2022-01-20' },
-  { site_id: sites[2].id, name: 'Substation C1', type: 'substation', serial_number: 'SN-C-002', status: 'operational', installed_at: '2022-02-01' },
-].map((e) => ({
-  id: randomUUID(),
-  ...e,
-  created_at: now,
-  updated_at: now,
-}));
+    }));
 
     await queryInterface.bulkInsert('equipment', equipment);
 
@@ -52,12 +125,32 @@ module.exports = {
 
     // ---------- Специалисты ----------
     const technicians = [
-  { full_name: 'Иванов Иван Иванович', specialization: 'Механик', employee_number: 'EMP-001' },
-  { full_name: 'Петров Пётр Петрович', specialization: 'Электрик', employee_number: 'EMP-002' },
-  { full_name: 'Сидоров Сидор Сидорович', specialization: 'Инженер-наладчик', employee_number: 'EMP-003' },
-  { full_name: 'Кузнецов Алексей Львович', specialization: 'Высотник', employee_number: 'EMP-004' },
-  { full_name: 'Смирнова Ольга Николаевна', specialization: 'Инженер КИПиА', employee_number: 'EMP-005' },
-].map((t) =>({
+      {
+        full_name: 'Иванов Иван Иванович',
+        specialization: 'Механик',
+        employee_number: 'EMP-001',
+      },
+      {
+        full_name: 'Петров Пётр Петрович',
+        specialization: 'Электрик',
+        employee_number: 'EMP-002',
+      },
+      {
+        full_name: 'Сидоров Сидор Сидорович',
+        specialization: 'Инженер-наладчик',
+        employee_number: 'EMP-003',
+      },
+      {
+        full_name: 'Кузнецов Алексей Львович',
+        specialization: 'Высотник',
+        employee_number: 'EMP-004',
+      },
+      {
+        full_name: 'Смирнова Ольга Николаевна',
+        specialization: 'Инженер КИПиА',
+        employee_number: 'EMP-005',
+      },
+    ].map((t) => ({
       id: randomUUID(),
       ...t,
       created_at: now,
@@ -74,8 +167,9 @@ module.exports = {
     for (let i = 0; i < 22; i++) {
       const eq = equipment[i % equipment.length];
       const status = statuses[i % statuses.length];
-      const created = new Date(now.getTime() - (30 - i) * 86400000); 
-const closed = status === 'done' ? new Date(created.getTime() + (i + 1) * 3600000) : null;
+      const created = new Date(now.getTime() - (30 - i) * 86400000);
+      const closed =
+        status === 'done' ? new Date(created.getTime() + (i + 1) * 3600000) : null;
 
       requests.push({
         id: randomUUID(),

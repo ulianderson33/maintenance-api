@@ -40,7 +40,6 @@ export function createApp() {
     }),
   );
 
-
   app.use(
     '/api',
     rateLimit({
@@ -50,7 +49,6 @@ export function createApp() {
       legacyHeaders: false,
     }),
   );
-
 
   app.use(cookieParser());
 
@@ -64,13 +62,11 @@ export function createApp() {
     }),
   );
 
-
   app.use('/metrics', metricsRouter);
 
   app.use('/api', apiRouter);
 
   app.use(notFoundHandler);
-
 
   app.use(errorHandler);
 

@@ -9,10 +9,8 @@ import { authenticate } from '../middlewares/auth.js';
 
 export const apiRouter = Router();
 
-
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/health', healthRouter);
-
 
 apiRouter.use('/equipment', authenticate, equipmentRouter);
 apiRouter.use('/requests', authenticate, requestsRouter);

@@ -9,9 +9,7 @@ const options = {
       version: '1.0.0',
       description: 'REST API для учёта заявок на обслуживание оборудования',
     },
-    servers: [
-      { url: '/api', description: 'Main API' },
-    ],
+    servers: [{ url: '/api', description: 'Main API' }],
     components: {
       securitySchemes: {
         bearerAuth: {

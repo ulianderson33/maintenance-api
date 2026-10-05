@@ -42,7 +42,10 @@ export class RequestsRepository {
   }
 
   async update(id, patch, options = {}) {
-    const [affected] = await MaintenanceRequest.update(patch, { where: { id }, ...options });
+    const [affected] = await MaintenanceRequest.update(patch, {
+      where: { id },
+      ...options,
+    });
     if (affected === 0) return null;
     return this.findById(id, options);
   }
