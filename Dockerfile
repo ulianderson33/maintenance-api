@@ -3,14 +3,15 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Сначала копируем только package-файлы — так Docker кэширует слой с зависимостями
+# Копируем package-файлы — слой с зависимостями кэшируется
 COPY package*.json ./
 
 # Устанавливаем ТОЛЬКО production-зависимости
 RUN npm ci --omit=dev
 
-# Копируем исходники
+# Копируем исходники и .sequelizerc
 COPY src ./src
+COPY .sequelizerc ./
 
 # ---------- Stage 2: runtime ----------
 FROM node:20-alpine
@@ -20,16 +21,19 @@ WORKDIR /app
 # Создаём непривилегированного пользователя
 RUN addgroup -S app && adduser -S app -G app
 
-# Копируем node_modules из build-стадии
+# Копируем node_modules и src из build-стадии
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/src ./src
+
+# Копируем package-файлы и .sequelizerc
 COPY package*.json ./
+COPY .sequelizerc ./
 
 # Даём права пользователю app
 RUN chown -R app:app /app
 USER app
 
-# Папка для JSON-хранилища (можно монтировать томом)
+# Папка для данных (если понадобится)
 RUN mkdir -p /app/data
 
 ENV NODE_ENV=production \
