@@ -16,12 +16,12 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "db:migrate": "sequelize-cli db:migrate",
-    "db:migrate:undo": "sequelize-cli db:migrate:undo",
-    "db:migrate:undo:all": "sequelize-cli db:migrate:undo:all",
-    "db:seed": "sequelize-cli db:seed:all",
-    "db:seed:undo:all": "sequelize-cli db:seed:undo:all",
-    "db:reset": "sequelize-cli db:migrate:undo:all && sequelize-cli db:migrate && sequelize-cli db:seed:all"
+  "db:migrate": "sequelize-cli --config src/db/config/sequelize.config.cjs --migrations-path src/db/migrations --seeders-path src/db/seeders db:migrate",
+  "db:migrate:undo": "sequelize-cli --config src/db/config/sequelize.config.cjs --migrations-path src/db/migrations --seeders-path src/db/seeders db:migrate:undo",
+  "db:migrate:undo:all": "sequelize-cli --config src/db/config/sequelize.config.cjs --migrations-path src/db/migrations --seeders-path src/db/seeders db:migrate:undo:all",
+  "db:seed": "sequelize-cli --config src/db/config/sequelize.config.cjs --migrations-path src/db/migrations --seeders-path src/db/seeders db:seed:all",
+  "db:seed:undo:all": "sequelize-cli --config src/db/config/sequelize.config.cjs --migrations-path src/db/migrations --seeders-path src/db/seeders db:seed:undo:all",
+  "db:reset": "sequelize-cli --config src/db/config/sequelize.config.cjs --migrations-path src/db/migrations --seeders-path src/db/seeders db:migrate:undo:all && sequelize-cli --config src/db/config/sequelize.config.cjs --migrations-path src/db/migrations --seeders-path src/db/seeders db:migrate && sequelize-cli --config src/db/config/sequelize.config.cjs --migrations-path src/db/migrations --seeders-path src/db/seeders db:seed:all"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
