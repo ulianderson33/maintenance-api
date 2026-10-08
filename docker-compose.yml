@@ -141,8 +141,8 @@ services:
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
-      GF_SERVER_ROOT_URL: 'http://localhost:3001/'
-      GF_SERVER_SERVE_FROM_SUB_PATH: 'false'
+      GF_SERVER_ROOT_URL: '%(protocol)s://%(domain)s/grafana/'
+      GF_SERVER_SERVE_FROM_SUB_PATH: 'true'
       GF_USERS_ALLOW_SIGN_UP: 'false'
       DB_NAME: ${DB_NAME:-maintenance}
       DB_USER: ${DB_USER:-maintenance}
